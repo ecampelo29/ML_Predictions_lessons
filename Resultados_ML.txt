@@ -1,0 +1,76 @@
+Treinamento com as variáveis: 
+total_rooms,total_bedrooms,median_income
+MSE: 6635036080.709076
+R²: 0.5148118197107797
+RMSE: 81455.7308033577 (USS 81.455,73 de erro)
+
+Treinamento com as variáveis: 
+total_rooms,total_bedrooms,median_income,population
+MSE: 6328307154.9666
+R²: 0.537241426349355
+RMSE: 79550.65779091082
+
+Treinamento com as variáveis: 
+total_rooms,total_bedrooms,median_income,population,housing_median_age
+MSE: 5877362526.013139
+R²: 0.5702168316480923
+RMSE: 76663.95845515114
+
+
+Treinamento do modelo LinearRegression() com as variáveis: 
+total_rooms,total_bedrooms,median_income,population,housing_median_age (como categorica) ,ocean_proximity
+MSE_train: 4777010413.471797  MSE_test: 4893361677.674578
+R²_train: 0.6391135239680421  R²_test: 0.6421720667366427
+RMSE_train: 69115.9201159313  RMSE_test: 69952.5673415535
+
+
+Treinamento do modelo LinearRegression() com as variáveis: 
+total_rooms,total_bedrooms,median_income,population,housing_median_age (como numero) ,ocean_proximity
+MSE_train: 4755654740.066723  MSE_test: 4869257812.271121
+R²_train: 0.6407268706119414  R²_test: 0.6439346661333577
+RMSE_train: 68961.25535448671  RMSE_test: 69780.06744243746
+
+
+Treinamento do modelo LinearRegression() com as variáveis: 
+total_rooms,total_bedrooms,median_income,population,households,housing_median_age,ocean_proximity,household_per_room,household_per_population,bedoom_per_room
+MSE_train: 4685625674.30516  MSE_test: 4820218918.483578
+R²_train: 0.6460173222909307  R²_test: 0.6475206438659206
+RMSE_train: 68451.63018004144  RMSE_test: 69427.79643978036
+
+Treinamento do modelo LinearRegression() com as variáveis: 
+total_rooms,total_bedrooms,median_income,population,households,housing_median_age,ocean_proximity,household_per_room,household_per_population,bedoom_per_room
+MSE_train: 4587142840.021209  MSE_test: 4740635301.815193
+R²_train: 0.653457356944015  R²_test: 0.6533402098309699
+RMSE_train: 67728.44926632536  RMSE_test: 68852.27158064717
+
+
+Treinamento do modelo SVR(kernel='linear') com as variáveis: 
+total_rooms,total_bedrooms,median_income,population,households,housing_median_age,ocean_proximity,household_per_room,household_per_population,bedoom_per_room
+MSE_train: 11921354227.699903  MSE_test: 12381072749.915407
+R²_train: 0.09938326602128089  R²_test: 0.0946318777338232
+RMSE_train: 109184.95421851815  RMSE_test: 111270.26893971006 (USS 109.184,95)
+
+Treinamento do modelo RandomForestRegressor(max_features=8, n_estimators=30, random_state=42) com as variáveis: 
+total_rooms,total_bedrooms,median_income,population,households,housing_median_age,ocean_proximity,household_per_room,household_per_population,bedoom_per_room
+MSE_train: 527589262.62707335  MSE_test: 3533625606.6342444
+R²_train: 0.9601424712734913  R²_test: 0.7416030060648837
+RMSE_train: 22969.311322437887  RMSE_test: 59444.30676384614 (USS 22.969,31)
+
+
+Treinamento do modelo LinearRegression() com as variáveis: 
+total_rooms,total_bedrooms,median_income,population,households,housing_median_age,ocean_proximity,household_per_room,household_per_population,bedoom_per_room
+MSE_train: 4587142840.021209  MSE_test: 4737327471.564644
+R²_train: 0.653457356944015  R²_test: 0.6535820954997812
+RMSE_train: 67728.44926632536  RMSE_test: 68828.2461752778
+
+Treinamento do modelo SVR(kernel='linear') com as variáveis: 
+total_rooms,total_bedrooms,median_income,population,households,housing_median_age,ocean_proximity,household_per_room,household_per_population,bedoom_per_room
+MSE_train: 11921354227.699903  MSE_test: 12360079542.707056
+R²_train: 0.09938326602128089  R²_test: 0.09616700970295722
+RMSE_train: 109184.95421851815  RMSE_test: 111175.89461167855
+
+Treinamento do modelo RandomForestRegressor(max_features=8, n_estimators=30, random_state=42) com as variáveis: 
+total_rooms,total_bedrooms,median_income,population,households,housing_median_age,ocean_proximity,household_per_room,household_per_population,bedoom_per_room
+MSE_train: 527589262.62707335  MSE_test: 3540432342.621702
+R²_train: 0.9601424712734913  R²_test: 0.741105262298717
+RMSE_train: 22969.311322437887  RMSE_test: 59501.5322712088
