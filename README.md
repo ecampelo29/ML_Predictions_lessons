@@ -1,4 +1,4 @@
-# ML_Predictions_lessons
+# ML_lessons
 experimenting with ml prediction on python
 
 
