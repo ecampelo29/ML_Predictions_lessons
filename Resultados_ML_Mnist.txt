@@ -1,0 +1,48 @@
+Modelo: SGDClassifier(random_state=42)
+Tue Negatives  : 8634 False Negatives: 357
+False Positives: 292 True Positives : 717
+Precision Score: 0.6675977653631285
+Recall Score: 0.7106045589692765
+F1_Score: 0.6884301488238119
+Roc_auc_score: 0.9281203899637992
+
+
+Modelo: SGDClassifier(random_state=42) -- Pixel
+Tue Negatives  : 8793 False Negatives: 198
+False Positives: 207 True Positives : 802
+Precision Score: 0.802
+Recall Score: 0.7948463825569871
+F1_Score: 0.7984071677451469
+Roc_auc_score: 0.9722573030028155
+
+
+Modelo: KNeighborsClassifier()
+Tue Negatives  : 8983 False Negatives: 8
+False Positives: 68 True Positives : 941
+Precision Score: 0.9915700737618546
+Recall Score: 0.9326065411298315
+F1_Score: 0.9611848825331971
+Roc_auc_score: 0.9901024248563065
+
+
+Modelo: SVC(gamma='auto', random_state=42)
+Tue Negatives  : null False Negatives: null
+False Positives: null True Positives : null
+Precision Score: 0.9481234636303627
+Recall Score: 0.947875572700592
+F1_Score: 0.9479160152827388
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+Confusion matrix: 
+[970, 0, 3, 3, 0, 0, 5, 0, 8, 2]
+[0, 1047, 4, 2, 1, 0, 2, 1, 5, 2]
+[7, 1, 938, 6, 6, 3, 7, 5, 12, 5]
+[4, 4, 10, 946, 0, 28, 1, 3, 26, 8]
+[1, 3, 3, 0, 944, 0, 4, 3, 2, 23]
+[5, 2, 7, 34, 3, 826, 21, 3, 13, 1]
+[2, 1, 2, 0, 4, 4, 951, 0, 3, 0]
+[0, 7, 9, 6, 6, 1, 0, 1044, 0, 17]
+[4, 20, 10, 17, 2, 11, 2, 5, 931, 7]
+[7, 7, 4, 13, 18, 3, 0, 17, 5, 887]
