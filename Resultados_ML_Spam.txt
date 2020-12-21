@@ -1,0 +1,347 @@
+Modelo: LogisticRegression(max_iter=1000, random_state=42)
+Tue Negatives  : 2034 False Negatives: 0
+False Positives: 4 True Positives : 415
+Precision Score: 0.999018645731109
+Recall Score: 0.9952267303102625
+F1_Score: 0.9971107593296679
+Roc_auc_score: 0.9999906130389582
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[2034, 0]
+[4, 415]
+
+
+Modelo: KNeighborsClassifier()
+Tue Negatives  : 2021 False Negatives: 13
+False Positives: 98 True Positives : 321
+Precision Score: 0.9574148070070336
+Recall Score: 0.8798592190517762
+F1_Score: 0.9129309873436666
+Roc_auc_score: 0.991532961140328
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[2021, 13]
+[98, 321]
+
+
+Modelo: LogisticRegression(max_iter=1000, random_state=42)
+Tue Negatives  : 486 False Negatives: 1
+False Positives: 6 True Positives : 121
+Precision Score: 0.9898040783686526
+Recall Score: 0.9753512587107309
+F1_Score: 0.9823686984916171
+Roc_auc_score: 0.9913175637439571
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[486, 1]
+[6, 121]
+
+
+Modelo: KNeighborsClassifier()
+Tue Negatives  : 482 False Negatives: 5
+False Positives: 45 True Positives : 82
+Precision Score: 0.9285698706623917
+Recall Score: 0.8177011754434187
+F1_Score: 0.8585227377463179
+Roc_auc_score: 0.9224077996410612
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[482, 5]
+[45, 82]
+
+
+Modelo: LogisticRegression(max_iter=1000, random_state=42)
+Tue Negatives  : 142 False Negatives: 153
+False Positives: 0 True Positives : 0
+Precision Score: 0.5
+Recall Score: 0.24067796610169492
+F1_Score: 0.32494279176201374
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[142, 153]
+[0, 0]
+
+
+
+Modelo: KNeighborsClassifier()
+Tue Negatives  : 257 False Negatives: 38
+False Positives: 0 True Positives : 0
+Precision Score: 0.5
+Recall Score: 0.43559322033898307
+F1_Score: 0.46557971014492755
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[257, 38]
+[0, 0]
+
+
+Modelo: KNeighborsClassifier()
+Tue Negatives  : 257 False Negatives: 38
+False Positives: 0 True Positives : 0
+Precision Score: 0.5
+Recall Score: 0.43559322033898307
+F1_Score: 0.46557971014492755
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[257, 38]
+[0, 0]
+
+Modelo: SGDClassifier(random_state=42)
+Tue Negatives  : 157 False Negatives: 138
+False Positives: 0 True Positives : 0
+Precision Score: 0.5
+Recall Score: 0.26610169491525426
+F1_Score: 0.34734513274336287
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[157, 138]
+[0, 0]
+
+Modelo: DecisionTreeClassifier(random_state=42)
+Tue Negatives  : 111 False Negatives: 184
+False Positives: 0 True Positives : 0
+Precision Score: 0.5
+Recall Score: 0.188135593220339
+F1_Score: 0.2733990147783251
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[111, 184]
+[0, 0]
+
+Modelo: RandomForestClassifier(random_state=42)
+Tue Negatives  : 189 False Negatives: 106
+False Positives: 0 True Positives : 0
+Precision Score: 0.5
+Recall Score: 0.32033898305084746
+F1_Score: 0.3904958677685951
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[189, 106]
+[0, 0]
+
+Modelo: SVC(random_state=42)
+Tue Negatives  : 248 False Negatives: 47
+False Positives: 0 True Positives : 0
+Precision Score: 0.5
+Recall Score: 0.42033898305084744
+F1_Score: 0.45672191528545114
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[248, 47]
+[0, 0]
+
+
+
+Modelo: KNeighborsClassifier(leaf_size=1, n_neighbors=3)
+Tue Negatives  : 240 False Negatives: 55
+False Positives: 0 True Positives : 0
+Precision Score: 0.5
+Recall Score: 0.4067796610169492
+F1_Score: 0.4485981308411215
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[240, 55]
+[0, 0]
+
+
+
+Modelo: LogisticRegression(max_iter=1000, random_state=42)
+Tue Negatives  : 487 False Negatives: 0
+False Positives: 5 True Positives : 122
+Precision Score: 0.9949186991869918
+Recall Score: 0.9803149606299213
+F1_Score: 0.9874062132082979
+Roc_auc_score: 0.9909295219001116
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[487, 0]
+[5, 122]
+
+Modelo: KNeighborsClassifier()
+Tue Negatives  : 483 False Negatives: 4
+False Positives: 43 True Positives : 84
+Precision Score: 0.9363982025578984
+Recall Score: 0.8266018852366247
+F1_Score: 0.8674992538855346
+Roc_auc_score: 0.9336610131125807
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[483, 4]
+[43, 84]
+
+Modelo: LogisticRegression(max_iter=1000, random_state=42)
+Tue Negatives  : 138 False Negatives: 158
+False Positives: 0 True Positives : 0
+Precision Score: 0.5
+Recall Score: 0.23310810810810811
+F1_Score: 0.31797235023041476
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[138, 158]
+[0, 0]
+
+Modelo: KNeighborsClassifier()
+Tue Negatives  : 259 False Negatives: 37
+False Positives: 0 True Positives : 0
+Precision Score: 0.5
+Recall Score: 0.4375
+F1_Score: 0.4666666666666667
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[259, 37]
+[0, 0]
+------------------------------------------------------------# incluindo assunto #----------------
+Modelo: LogisticRegression(max_iter=1000, random_state=42)
+Tue Negatives  : 471 False Negatives: 16
+False Positives: 116 True Positives : 11
+Precision Score: 0.6048962079626474
+Recall Score: 0.5268799818913806
+F1_Score: 0.509976057462091
+Roc_auc_score: 0.44214134424162066
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[471, 16]
+[116, 11]
+
+Modelo: KNeighborsClassifier()
+Tue Negatives  : 474 False Negatives: 13
+False Positives: 99 True Positives : 28
+Precision Score: 0.7550759800791725
+Recall Score: 0.5968891978851719
+F1_Score: 0.6138364779874215
+Roc_auc_score: 0.6969312357515886
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[474, 13]
+[99, 28]
+
+Modelo: LogisticRegression(max_iter=1000, random_state=42)
+Tue Negatives  : 259 False Negatives: 37
+False Positives: 0 True Positives : 0
+Precision Score: 0.5
+Recall Score: 0.4375
+F1_Score: 0.4666666666666667
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[259, 37]
+[0, 0]
+
+Modelo: KNeighborsClassifier()
+Tue Negatives  : 279 False Negatives: 17
+False Positives: 0 True Positives : 0
+Precision Score: 0.5
+Recall Score: 0.47128378378378377
+F1_Score: 0.4852173913043478
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[279, 17]
+[0, 0]
+
+Modelo: SGDClassifier(random_state=42)
+Tue Negatives  : 203 False Negatives: 93
+False Positives: 0 True Positives : 0
+Precision Score: 0.5
+Recall Score: 0.34290540540540543
+F1_Score: 0.406813627254509
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[203, 93]
+[0, 0]
+
+Modelo: DecisionTreeClassifier(random_state=42)
+Tue Negatives  : 234 False Negatives: 62
+False Positives: 0 True Positives : 0
+Precision Score: 0.5
+Recall Score: 0.3952702702702703
+F1_Score: 0.44150943396226416
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[234, 62]
+[0, 0]
+
+Modelo: RandomForestClassifier(random_state=42)
+Tue Negatives  : 290 False Negatives: 6
+False Positives: 0 True Positives : 0
+Precision Score: 0.5
+Recall Score: 0.48986486486486486
+F1_Score: 0.4948805460750853
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[290, 6]
+[0, 0]
+
+Modelo: SVC(probability=True, random_state=42)
+Tue Negatives  : 277 False Negatives: 19
+False Positives: 0 True Positives : 0
+Precision Score: 0.5
+Recall Score: 0.46790540540540543
+F1_Score: 0.48342059336823734
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[277, 19]
+[0, 0]
+
