@@ -137,14 +137,14 @@ class WordCounterToVectorTransformer(BaseEstimator, TransformerMixin):
         for subject, body in X:
             for word, count in subject.items():
                 total_count[word] += min(count, 10)
-                most_common = total_count.most_common()[:self.vocabulary_size]
-                self.most_common_ = most_common
-                self.vocabulary_ = {word: index + 1 for index, (word, count) in enumerate(most_common)}
+            most_common = total_count.most_common()[:self.vocabulary_size]
+            self.most_common_ = most_common
+            self.vocabulary_ = {word: index + 1 for index, (word, count) in enumerate(most_common)}
             for word, count in body.items():
                 total_count[word] += min(count, 10)
-                most_common = total_count.most_common()[:self.vocabulary_size]
-                self.most_common_ = most_common
-                self.vocabulary_ = {word: index + 1 for index, (word, count) in enumerate(most_common)}
+            most_common = total_count.most_common()[:self.vocabulary_size]
+            self.most_common_ = most_common
+            self.vocabulary_ = {word: index + 1 for index, (word, count) in enumerate(most_common)}
         return self
     
     def transform(self, X, y=None):
@@ -272,22 +272,27 @@ y_test =  df_test['spam'].copy().astype('int')
 # Pipeline que retorna os textos (body) em matriz
 # =============================================================================
 
-# preprocess_pipeline=[]
-# preprocess_pipeline = Pipeline([
-#     ("email_to_wordcount", EmailToWordCounterTransformer()),
-#     ("wordcount_to_vector", WordCounterToVectorTransformer()),
-# ])
+preprocess_pipeline=[]
+preprocess_pipeline = Pipeline([
+    ("email_to_wordcount", EmailToWordCounterTransformer()),
+    ("wordcount_to_vector", WordCounterToVectorTransformer()),
+])
 
-# X_train_transformed = preprocess_pipeline.fit_transform(X_train)
-# X_test_transformed = preprocess_pipeline.transform(X_test)
+X_train_transformed = preprocess_pipeline.fit_transform(X_train)
+X_test_transformed = preprocess_pipeline.transform(X_test)
 
 # pipeline passou a apresentar erro no dicionário ??  se processado um por vez
 # funciona normalmente... 
-X_e = EmailToWordCounterTransformer().fit_transform(X_test)
-X_test_transformed = WordCounterToVectorTransformer().fit_transform(X_e)
 
-X_e = EmailToWordCounterTransformer().fit_transform(X_train)
-X_train_transformed = WordCounterToVectorTransformer().fit_transform(X_e)
+# word_tranformer = WordCounterToVectorTransformer()
+
+# X_e = EmailToWordCounterTransformer().fit_transform(X_train)
+# X_train_transformed = word_tranformer.fit_transform(X_e)
+
+# investigar erro, pois estava usando fit_transform ao inves de transform
+# X_e2 = EmailToWordCounterTransformer().transform(X_test)
+# X_test_transformed = word_tranformer.transform(X_e2)
+
 # =============================================================================
 # Treino
 # =============================================================================
@@ -342,25 +347,25 @@ df_label = df_new_emails['spam'].astype('int')
 df_new_emails.drop('spam', axis=1, inplace=True)
 
 
-# new_data_transformed = preprocess_pipeline.transform(df_new_emails)
-X_e = EmailToWordCounterTransformer().fit_transform(df_new_emails)
+new_data_transformed = preprocess_pipeline.transform(df_new_emails)
+#X_e = EmailToWordCounterTransformer().fit_transform(df_new_emails)
 
-new_data_transformed = WordCounterToVectorTransformer().fit_transform(X_e)
-# muito ruim!!! 48% // incluindo análise do assunto 88% de acerto
+#new_data_transformed = WordCounterToVectorTransformer().fit_transform(X_e)
+# muito ruim!!! 48% // incluindo análise do assunto 48% de acerto
 func.predicting(lr_clf,new_data_transformed, df_label, relatorio)
 
-# um pouco melhor 87% // incluindo análise do assunto = 95% de acerto
+# um pouco melhor 87% // incluindo análise do assunto = 88% de acerto
 func.predicting(kn_clf,new_data_transformed, df_label, relatorio)
 
 
-# muito ruim!!! 46% // 69%
+# muito ruim!!! 46% // 52%
 from sklearn.linear_model import SGDClassifier
 sgd_clf = SGDClassifier(max_iter=1000, tol=1e-3, random_state=42)    
 sgd_clf.fit(X_train_transformed, y_train)
 
 func.predicting(sgd_clf, new_data_transformed, df_label, relatorio)
 
-# muito ruim!!! 37% // 79%
+# muito ruim!!! 37% // 42%
 from sklearn.tree import DecisionTreeClassifier
 dt_clf = DecisionTreeClassifier(random_state=42)
 
@@ -368,7 +373,7 @@ dt_clf.fit(X_train_transformed, y_train)
 
 func.predicting(dt_clf, new_data_transformed, df_label, relatorio)
 
-# melhor... 64% /// 98% - passa a ser o melhor modelo.
+# melhor... 64% /// 54%
 from sklearn.ensemble import RandomForestClassifier
 forest_clf = RandomForestClassifier(n_estimators=100, random_state=42)
 forest_clf.fit(X_train_transformed, y_train)
@@ -385,10 +390,10 @@ metricas = func.classification_metrics(relatorio, lr_clf, y_test, y_pred, y_scor
 print(metricas)
 
 
-
-# melhor... 84% // 94%
+ tentar ajustar os parametros do svc para encontrar um resultado melhor
+# melhor... 84% // 85% - melhor modelo 
 from sklearn.svm import SVC
-svm_clf = SVC(gamma="scale",  probability=True, random_state=42)
+svm_clf = SVC(kernel = 'rbf', gamma="scale",  probability=True, random_state=42)
 
 svm_clf.fit(X_train_transformed, y_train)
 
@@ -429,10 +434,33 @@ best_kn_clf = func.load_model('best_kn_clf_spam')
 func.predicting(best_kn_clf, new_data_transformed, df_label, relatorio)
 
 # =============================================================================
+# 
+# =============================================================================
+from sklearn.model_selection import GridSearchCV
+from sklearn.svm import SVC
+C_range = np.logspace(-2, 10, 13)
+gamma_range = np.logspace(-9, 3, 13)
+param_grid = dict(gamma=gamma_range, C=C_range)
+
+grid_svc = GridSearchCV(SVC(probability=True, random_state=42), param_grid=param_grid, cv=10 )
+grid_svc.fit(X_train_transformed, y_train)
+
+best_params = grid_svc.best_params_
+
+# pior que o default 81% ??
+best_svc_clf = grid_svc.best_estimator_
+
+func.keep_model(best_kn_clf, 'best_svc_clf_spam')
+
+best_kn_clf = func.load_model('best_svc_clf_spam')
+
+func.predicting(best_kn_clf, new_data_transformed, df_label, relatorio)
+
+# =============================================================================
 # após incluir o assunto como variável, pois não há muitos dados para treinar
 # o modelo de forma mais completa, verifica-se que no dataset de treino e teste
 # as métricas não são promissoras, porém há melhora em todos os modelos
-# qdo aplicado no dataset Hard Ham, chegando a 98% de identificação de não spam 
+# qdo aplicado no dataset Hard Ham, chegando a 85% de identificação de não spam 
 # =============================================================================
 
 
