@@ -1,0 +1,31 @@
+
+
+Modelo: LogisticRegression()
+Tue Negatives  : null False Negatives: null
+False Positives: null True Positives : null
+Precision Score: 0.12222222222222222
+Recall Score: 0.3333333333333333
+F1_Score: 0.17886178861788615
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1, 2]
+
+Confusion matrix: 
+[0, 0, 10]
+[0, 0, 9]
+[0, 0, 11]
+
+Modelo: LogisticRegression()
+Tue Negatives  : null False Negatives: null
+False Positives: null True Positives : null
+Precision Score: 1.0
+Recall Score: 1.0
+F1_Score: 1.0
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1]
+
+Confusion matrix: 
+[10, 0, 0]
+[0, 9, 0]
+[0, 0, 11]
