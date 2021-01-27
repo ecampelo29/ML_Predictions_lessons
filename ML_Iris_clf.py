@@ -110,29 +110,33 @@ X_train, X_test, y_train, y_test = train_test_split(X_petal, y, test_size= 0.2, 
 from sklearn.preprocessing import StandardScaler
 st_scaler = StandardScaler()
 
-# X_train_scaled = st_scaler.fit_transform(X_train)
-# X_test_scaled = st_scaler.fit_transform(X_test)
+X_train_scaled = st_scaler.fit_transform(X_train)
+X_test_scaled = st_scaler.fit_transform(X_test)
+
 
 # =============================================================================
-# Linear Regression
+# Linear Regression - análise de 0 e 1 no intervalo da função sigmoid
+# ótimo para classificação binária, porém também pode ser usado como multiclassificador
 # =============================================================================
 from sklearn.linear_model import LogisticRegression
 
-lr_clf_petal = LogisticRegression()
+lr_clf_petal = LogisticRegression(multi_class="multinomial",solver="lbfgs", C=10, random_state=42)
 
-# lr_clf_petal.fit(X_train_scaled, y_train)
-# y_pred = lr_clf_petal.predict(X_test)
+lr_clf_petal.fit(X_train_scaled, y_train)
+y_pred = lr_clf_petal.predict(X_test_scaled)
 
-# y_scores = lr_clf_petal.decision_function(X_test)
+y_scores = lr_clf_petal.decision_function(X_test_scaled)
 
-# metricas = func.classification_metrics(relatorio, lr_clf_petal, y_test, y_pred, y_scores)
+metricas = func.classification_metrics(relatorio, lr_clf_petal, y_test, y_pred, y_scores)
 
-# print(metricas) # 
+print(metricas) # 
 
 # resultado: não funciona para mais de uma classe
 
-
-# transformando então y em binarios, adaptando as análise para multiclass
+# =============================================================================
+# Experimentando uma análise manual para ver se temos os mesmos resultados do multiclass
+# =============================================================================
+# transformando então y em binarios
 
 y_setosa = (y==0).astype(int)
 y_versicolor = (y==1).astype(int)
@@ -180,12 +184,68 @@ print(metricas)
 
 # =============================================================================
 # Usando modelos próprios para multiclass
+# Support Vector Classfication - trabalha tanto com binários como multiclasses
+# funciona para quantidades pequenas e médias de dados
+# se os dados podem ser separados linearmente, este modelo funciona muito bem, 
+# pois cria 'ruas' entre as classes de forma determinar a qual o dado pertence
 # =============================================================================
 
+from sklearn.svm import SVC
+
+svm_clf = SVC(gamma="auto", random_state=42)
+
+svm_clf.fit(X_train_scaled, y_train)
+
+func.predicting(svm_clf, X_test_scaled, y_test, relatorio)
+
+# =============================================================================
+# Decision Tree - a cada iteração, decide se o dado pertence ou não a "folha"
+# dado suas características, por exemplo, irá verificar se a largura está dentro 
+# e depois avalia o cumprimento da folha, classificando-a
+# =============================================================================
+
+from sklearn.tree import DecisionTreeClassifier
+
+# como temos apenas largura e cumprimento, vamos usar 2 camadas na decisão
+dtree_clf = DecisionTreeClassifier(max_depth=2, random_state=42)
+dtree_clf.fit(X_train_scaled, y_train)
+
+func.predicting(dtree_clf, X_test_scaled, y_test, relatorio)
+
+# =============================================================================
+# Random forest é uma coleção de decision trees, ou seja, ao invés de treinar apenas uma, 
+# treina-se várias árvores aleatórias
+# =============================================================================
+
+from sklearn.ensemble import RandomForestClassifier
+# por ser um dataset simples vamos usar apenas 100 arvores com dois nodes 
+rnd_clf = RandomForestClassifier(n_estimators=100, max_leaf_nodes=4, random_state=42)
+rnd_clf.fit(X_train_scaled, y_train)
+
+func.predicting(rnd_clf, X_test_scaled, y_test, relatorio) # chegou perto dos anteriores
+
+# por ser um dataset simples vamos usar apenas 100 arvores com 4 nodes 
+rnd_clf = RandomForestClassifier(n_estimators=100, max_leaf_nodes=4, random_state=42)
+rnd_clf.fit(X_train_scaled, y_train)
+
+func.predicting(rnd_clf, X_test_scaled, y_test, relatorio) # agora igualou aos demais.
+
+# =============================================================================
+# Por fim uma análise das distâncias entre os pontos com o KNN
+# =============================================================================
+from sklearn.neighbors import KNeighborsClassifier
+
+knn_clf = KNeighborsClassifier(weights='distance', n_neighbors=4)
+
+knn_clf.fit(X_train_scaled, y_train)
+
+func.predicting(rnd_clf, X_test_scaled, y_test, relatorio)
 
 
 
-
-
-
+# =============================================================================
+# por ser um dataset relativamente fácil (os modelos parecem viciados nele!!!)
+# a porção linear que se refere às pétalas apresentam o mesmo resultado em todos 
+# os modelos classificadores. 
+# =============================================================================
 

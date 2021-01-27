@@ -1,20 +1,20 @@
 
-
-Modelo: LogisticRegression()
+Modelo: LogisticRegression(C=10, multi_class='multinomial', random_state=42)
 Tue Negatives  : null False Negatives: null
 False Positives: null True Positives : null
-Precision Score: 0.12222222222222222
-Recall Score: 0.3333333333333333
-F1_Score: 0.17886178861788615
+Precision Score: 0.9666666666666667
+Recall Score: 0.9696969696969697
+F1_Score: 0.9665831244778613
 Roc_auc_score: não disponível
 Classes analisadas: 
 [0, 1, 2]
 
 Confusion matrix: 
-[0, 0, 10]
-[0, 0, 9]
-[0, 0, 11]
+[10, 0, 0]
+[0, 9, 0]
+[0, 1, 10]
 
+----------- manual -------------
 Modelo: LogisticRegression()
 Tue Negatives  : null False Negatives: null
 False Positives: null True Positives : null
@@ -29,3 +29,81 @@ Confusion matrix:
 [10, 0, 0]
 [0, 9, 0]
 [0, 0, 11]
+
+
+Modelo: SVC(gamma='auto', random_state=42)
+Tue Negatives  : null False Negatives: null
+False Positives: null True Positives : null
+Precision Score: 0.9666666666666667
+Recall Score: 0.9696969696969697
+F1_Score: 0.9665831244778613
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1, 2]
+
+Confusion matrix: 
+[10, 0, 0]
+[0, 9, 0]
+[0, 1, 10]
+
+Modelo: DecisionTreeClassifier(max_depth=2, random_state=42)
+Tue Negatives  : null False Negatives: null
+False Positives: null True Positives : null
+Precision Score: 0.9666666666666667
+Recall Score: 0.9696969696969697
+F1_Score: 0.9665831244778613
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1, 2]
+
+Confusion matrix: 
+[10, 0, 0]
+[0, 9, 0]
+[0, 1, 10]
+
+
+
+Modelo: RandomForestClassifier(max_leaf_nodes=2, random_state=42)
+Tue Negatives  : null False Negatives: null
+False Positives: null True Positives : null
+Precision Score: 0.9393939393939394
+Recall Score: 0.9393939393939394
+F1_Score: 0.9333333333333332
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1, 2]
+
+Confusion matrix: 
+[10, 0, 0]
+[0, 9, 0]
+[0, 2, 9]
+
+Modelo: RandomForestClassifier(max_leaf_nodes=4, random_state=42)
+Tue Negatives  : null False Negatives: null
+False Positives: null True Positives : null
+Precision Score: 0.9666666666666667
+Recall Score: 0.9696969696969697
+F1_Score: 0.9665831244778613
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1, 2]
+
+Confusion matrix: 
+[10, 0, 0]
+[0, 9, 0]
+[0, 1, 10]
+
+Modelo: RandomForestClassifier(max_leaf_nodes=4, random_state=42)
+Tue Negatives  : null False Negatives: null
+False Positives: null True Positives : null
+Precision Score: 0.9666666666666667
+Recall Score: 0.9696969696969697
+F1_Score: 0.9665831244778613
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1, 2]
+
+Confusion matrix: 
+[10, 0, 0]
+[0, 9, 0]
+[0, 1, 10]
