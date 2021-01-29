@@ -90,8 +90,6 @@ plt.plot(X[y==2, 0], X[y==2, 1], "g^", label="Iris virginica")
 plt.plot(X[y==1, 0], X[y==1, 1], "bs", label="Iris versicolor")
 plt.plot(X[y==0, 0], X[y==0, 1], "yo", label="Iris setosa")
 
-from matplotlib.colors import ListedColormap
-custom_cmap = ListedColormap(['#fafab0','#9898ff','#a0faa0'])
 
 # plt.contourf(x0, x1, zz, cmap=custom_cmap)
 # contour = plt.contour(x0, x1, zz1, cmap=plt.cm.brg)
@@ -106,12 +104,20 @@ plt.show()
 # separando os dados - primeiro a parte linear. 
 X_train, X_test, y_train, y_test = train_test_split(X_petal, y, test_size= 0.2, random_state=42)
 
+# não linear
+X_train_, X_test_, y_train_, y_test_ = train_test_split(X_sepal, y, test_size= 0.2, random_state=42)
+
 # transformando os dados 
 from sklearn.preprocessing import StandardScaler
 st_scaler = StandardScaler()
 
+# petal
 X_train_scaled = st_scaler.fit_transform(X_train)
 X_test_scaled = st_scaler.fit_transform(X_test)
+
+# sepal
+X_train_sepal_scaled = st_scaler.fit_transform(X_train_)
+X_test_sepal_scaled = st_scaler.fit_transform(X_test_)
 
 
 # =============================================================================
@@ -131,12 +137,16 @@ metricas = func.classification_metrics(relatorio, lr_clf_petal, y_test, y_pred, 
 
 print(metricas) # 
 
-# resultado: não funciona para mais de uma classe
+# sepal
+lr_clf_sepal = LogisticRegression(multi_class="multinomial",solver="lbfgs", C=10, random_state=42)
+lr_clf_sepal.fit(X_train_sepal_scaled, y_train_)
+
+func.predicting(lr_clf_sepal, X_test_sepal_scaled, y_test_, relatorio)
 
 # =============================================================================
 # Experimentando uma análise manual para ver se temos os mesmos resultados do multiclass
 # =============================================================================
-# transformando então y em binarios
+# transformando então y em binarios - Análise pétalas
 
 y_setosa = (y==0).astype(int)
 y_versicolor = (y==1).astype(int)
@@ -183,7 +193,6 @@ print(metricas)
 # 100% de acerto no teste (overfitting?!?!?)
 
 # =============================================================================
-# Usando modelos próprios para multiclass
 # Support Vector Classfication - trabalha tanto com binários como multiclasses
 # funciona para quantidades pequenas e médias de dados
 # se os dados podem ser separados linearmente, este modelo funciona muito bem, 
@@ -191,13 +200,19 @@ print(metricas)
 # =============================================================================
 
 from sklearn.svm import SVC
-
+# petal
 svm_clf = SVC(gamma="auto", random_state=42)
 
 svm_clf.fit(X_train_scaled, y_train)
 
 func.predicting(svm_clf, X_test_scaled, y_test, relatorio)
 
+# sepal 
+svm_clf_sepal = SVC(gamma="auto", random_state=42)
+
+svm_clf_sepal.fit(X_train_sepal_scaled, y_train_)
+
+func.predicting(svm_clf_sepal, X_test_sepal_scaled, y_test_, relatorio)
 # =============================================================================
 # Decision Tree - a cada iteração, decide se o dado pertence ou não a "folha"
 # dado suas características, por exemplo, irá verificar se a largura está dentro 
@@ -205,12 +220,18 @@ func.predicting(svm_clf, X_test_scaled, y_test, relatorio)
 # =============================================================================
 
 from sklearn.tree import DecisionTreeClassifier
-
+# petal
 # como temos apenas largura e cumprimento, vamos usar 2 camadas na decisão
 dtree_clf = DecisionTreeClassifier(max_depth=2, random_state=42)
 dtree_clf.fit(X_train_scaled, y_train)
 
 func.predicting(dtree_clf, X_test_scaled, y_test, relatorio)
+
+# sepal
+dtree_clf_sepal = DecisionTreeClassifier(max_depth=2, random_state=42)
+dtree_clf_sepal.fit(X_train_sepal_scaled, y_train_)
+
+func.predicting(dtree_clf_sepal, X_test_sepal_scaled, y_test_, relatorio)
 
 # =============================================================================
 # Random forest é uma coleção de decision trees, ou seja, ao invés de treinar apenas uma, 
@@ -218,30 +239,38 @@ func.predicting(dtree_clf, X_test_scaled, y_test, relatorio)
 # =============================================================================
 
 from sklearn.ensemble import RandomForestClassifier
+# petal
 # por ser um dataset simples vamos usar apenas 100 arvores com dois nodes 
 rnd_clf = RandomForestClassifier(n_estimators=100, max_leaf_nodes=4, random_state=42)
 rnd_clf.fit(X_train_scaled, y_train)
 
 func.predicting(rnd_clf, X_test_scaled, y_test, relatorio) # chegou perto dos anteriores
 
+# sepal
 # por ser um dataset simples vamos usar apenas 100 arvores com 4 nodes 
-rnd_clf = RandomForestClassifier(n_estimators=100, max_leaf_nodes=4, random_state=42)
-rnd_clf.fit(X_train_scaled, y_train)
+rnd_clf_sepal = RandomForestClassifier(n_estimators=100, max_leaf_nodes=10, random_state=42)
+rnd_clf_sepal.fit(X_train_sepal_scaled, y_train_)
 
-func.predicting(rnd_clf, X_test_scaled, y_test, relatorio) # agora igualou aos demais.
+func.predicting(rnd_clf_sepal, X_test_sepal_scaled, y_test_, relatorio) # agora igualou aos demais.
 
 # =============================================================================
 # Por fim uma análise das distâncias entre os pontos com o KNN
 # =============================================================================
 from sklearn.neighbors import KNeighborsClassifier
 
+# petal
 knn_clf = KNeighborsClassifier(weights='distance', n_neighbors=4)
 
 knn_clf.fit(X_train_scaled, y_train)
 
 func.predicting(rnd_clf, X_test_scaled, y_test, relatorio)
 
+# sepal
+knn_clf_sepal = KNeighborsClassifier(weights='distance', n_neighbors=4)
 
+knn_clf_sepal.fit(X_train_sepal_scaled, y_train_)
+
+func.predicting(rnd_clf_sepal, X_test_sepal_scaled, y_test_, relatorio)
 
 # =============================================================================
 # por ser um dataset relativamente fácil (os modelos parecem viciados nele!!!)
