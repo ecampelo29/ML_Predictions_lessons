@@ -12,11 +12,6 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt 
 
 from sklearn.model_selection import train_test_split
-from sklearn.base import BaseEstimator, TransformerMixin
-from sklearn.pipeline import Pipeline
-from scipy.sparse import csr_matrix
-import nltk
-from collections import Counter
 import numpy as np
 
 # funções pessoais (incluir local no pythonpath)
@@ -119,6 +114,15 @@ X_test_scaled = st_scaler.fit_transform(X_test)
 X_train_sepal_scaled = st_scaler.fit_transform(X_train_)
 X_test_sepal_scaled = st_scaler.fit_transform(X_test_)
 
+# incrementando polinomial na parte do sepal
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import PolynomialFeatures
+
+poly_sepal = Pipeline([('poly', PolynomialFeatures(degree=3)), 
+                      ('scaler', StandardScaler())])
+
+X_train_poly = poly_sepal.fit_transform(X_train_)
+X_test_poly = poly_sepal.fit_transform(X_test_)
 
 # =============================================================================
 # Linear Regression - análise de 0 e 1 no intervalo da função sigmoid
@@ -142,6 +146,12 @@ lr_clf_sepal = LogisticRegression(multi_class="multinomial",solver="lbfgs", C=10
 lr_clf_sepal.fit(X_train_sepal_scaled, y_train_)
 
 func.predicting(lr_clf_sepal, X_test_sepal_scaled, y_test_, relatorio)
+
+# poly sepal
+lr_clf_poly = LogisticRegression(multi_class="multinomial",solver="lbfgs", C=10, random_state=42)
+lr_clf_poly.fit(X_train_poly, y_train_)
+
+func.predicting(lr_clf_poly, X_test_poly, y_test_, relatorio)
 
 # =============================================================================
 # Experimentando uma análise manual para ver se temos os mesmos resultados do multiclass
@@ -213,6 +223,14 @@ svm_clf_sepal = SVC(gamma="auto", random_state=42)
 svm_clf_sepal.fit(X_train_sepal_scaled, y_train_)
 
 func.predicting(svm_clf_sepal, X_test_sepal_scaled, y_test_, relatorio)
+
+# poly sepal
+svm_clf_poly = SVC(gamma="auto", random_state=42)
+
+svm_clf_poly.fit(X_train_poly, y_train_)
+
+func.predicting(svm_clf_poly, X_test_poly, y_test_, relatorio)
+
 # =============================================================================
 # Decision Tree - a cada iteração, decide se o dado pertence ou não a "folha"
 # dado suas características, por exemplo, irá verificar se a largura está dentro 
@@ -232,6 +250,13 @@ dtree_clf_sepal = DecisionTreeClassifier(max_depth=2, random_state=42)
 dtree_clf_sepal.fit(X_train_sepal_scaled, y_train_)
 
 func.predicting(dtree_clf_sepal, X_test_sepal_scaled, y_test_, relatorio)
+
+# poly sepal
+dtree_clf_poly = DecisionTreeClassifier(max_depth=10, random_state=42)
+
+dtree_clf_poly.fit(X_train_poly, y_train_)
+
+func.predicting(dtree_clf_poly, X_test_poly, y_test_, relatorio)
 
 # =============================================================================
 # Random forest é uma coleção de decision trees, ou seja, ao invés de treinar apenas uma, 
@@ -253,6 +278,13 @@ rnd_clf_sepal.fit(X_train_sepal_scaled, y_train_)
 
 func.predicting(rnd_clf_sepal, X_test_sepal_scaled, y_test_, relatorio) # agora igualou aos demais.
 
+# poly sepal
+rnd_clf_poly = RandomForestClassifier(n_estimators=100, max_leaf_nodes=20, random_state=42)
+
+rnd_clf_poly.fit(X_train_poly, y_train_)
+
+func.predicting(rnd_clf_poly, X_test_poly, y_test_, relatorio)
+
 # =============================================================================
 # Por fim uma análise das distâncias entre os pontos com o KNN
 # =============================================================================
@@ -272,9 +304,30 @@ knn_clf_sepal.fit(X_train_sepal_scaled, y_train_)
 
 func.predicting(rnd_clf_sepal, X_test_sepal_scaled, y_test_, relatorio)
 
+# poly sepal
+knn_clf_poly = KNeighborsClassifier(weights='distance', n_neighbors=4)
+
+knn_clf_poly.fit(X_train_poly, y_train_)
+
+func.predicting(knn_clf_poly, X_test_poly, y_test_, relatorio)
+
 # =============================================================================
 # por ser um dataset relativamente fácil (os modelos parecem viciados nele!!!)
 # a porção linear que se refere às pétalas apresentam o mesmo resultado em todos 
 # os modelos classificadores. 
+# a porção não linear, porém, mostra que apenas o randomforest tem desempenho 
+# excelente desde que se inclua características artificiais via polynomialfeatures 
 # =============================================================================
+
+from sklearn.metrics import accuracy_score
+
+list_models = [lr_clf_poly,svm_clf_poly, dtree_clf_poly,rnd_clf_poly, knn_clf_poly ]
+
+for model in list_models:
+    y_pred_train = model.predict(X_train_poly)
+    y_pred_test = model.predict(X_test_poly)
+    print(model,'Training Set Score: %4f' % accuracy_score(y_pred_train, y_train_))
+    print(model,'Test Set Score: %4f' % accuracy_score(y_pred_test, y_test_))
+
+
 

@@ -215,3 +215,113 @@ Confusion matrix:
 [10, 0, 0]
 [0, 8, 1]
 [0, 3, 8]
+
+# poly sepal
+
+Modelo: LogisticRegression(C=10, multi_class='multinomial', random_state=42)
+Tue Negatives  : null False Negatives: null
+False Positives: null True Positives : null
+Precision Score: 0.8333333333333334
+Recall Score: 0.8350168350168351
+F1_Score: 0.8329156223893066
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1, 2]
+
+Confusion matrix: 
+[10, 0, 0]
+[0, 7, 2]
+[0, 3, 8]
+
+Modelo: SVC(gamma='auto', random_state=42)
+Tue Negatives  : null False Negatives: null
+False Positives: null True Positives : null
+Precision Score: 0.7777777777777778
+Recall Score: 0.7744107744107743
+F1_Score: 0.7660818713450291
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1, 2]
+
+Confusion matrix: 
+[10, 0, 0]
+[0, 7, 2]
+[0, 5, 6]
+
+
+Modelo: DecisionTreeClassifier(max_depth=10, random_state=42)
+Tue Negatives  : null False Negatives: null
+False Positives: null True Positives : null
+Precision Score: 0.7979797979797979
+Recall Score: 0.7979797979797979
+F1_Score: 0.7979797979797979
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1, 2]
+
+Confusion matrix: 
+[10, 0, 0]
+[0, 6, 3]
+[0, 3, 8]
+
+Modelo: DecisionTreeClassifier(max_depth=20, random_state=42)
+Tue Negatives  : null False Negatives: null
+False Positives: null True Positives : null
+Precision Score: 0.7601731601731601
+Recall Score: 0.7508417508417509
+F1_Score: 0.7160110420979987
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1, 2]
+
+Confusion matrix: 
+[10, 0, 0]
+[0, 8, 1]
+[1, 6, 4]
+
+Modelo: DecisionTreeClassifier(max_depth=5, random_state=42)
+Tue Negatives  : null False Negatives: null
+False Positives: null True Positives : null
+Precision Score: 0.8585858585858586
+Recall Score: 0.7845117845117845
+F1_Score: 0.7789987789987789
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1, 2]
+
+Confusion matrix: 
+[10, 0, 0]
+[0, 4, 5]
+[1, 0, 10]
+
+Modelo: RandomForestClassifier(max_leaf_nodes=20, random_state=42)
+Tue Negatives  : null False Negatives: null
+False Positives: null True Positives : null
+Precision Score: 0.9666666666666667
+Recall Score: 0.9696969696969697
+F1_Score: 0.9665831244778613
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1, 2]
+
+Confusion matrix: 
+[10, 0, 0]
+[0, 9, 0]
+[0, 1, 10]
+
+Modelo: KNeighborsClassifier(n_neighbors=4, weights='distance')
+Tue Negatives  : null False Negatives: null
+False Positives: null True Positives : null
+Precision Score: 0.8653198653198654
+Recall Score: 0.8653198653198654
+F1_Score: 0.8653198653198654
+Roc_auc_score: não disponível
+Classes analisadas: 
+[0, 1, 2]
+
+Confusion matrix: 
+[10, 0, 0]
+[0, 7, 2]
+[0, 2, 9]
+
+
