@@ -13,6 +13,7 @@ import pandas as pd
 #import matplotlib as mpl
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.image as mpimg
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
@@ -23,7 +24,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.compose import ColumnTransformer
 
 import joblib
-
+import urllib
 
 # settings
 # Ignore useless warnings (see SciPy issue #5998)
@@ -32,6 +33,14 @@ warnings.filterwarnings(action="ignore", message="^internal gelsd")
 
 relatorio = os.path.join(os.path.expanduser('~'), 'Documentos', 
                                   'Machine learning', 'Resultados_DBSCAN.txt')
+
+# capturando a imagem usada no livro para mapear os imóveis na califórnia
+images_path = relatorio = os.path.join(os.path.expanduser('~'), 'Documentos', 
+                                  'Machine learning')
+DOWNLOAD_ROOT = "https://raw.githubusercontent.com/ageron/handson-ml2/master/"
+filename = "california.png"
+url = DOWNLOAD_ROOT + "images/end_to_end_project/" + filename
+urllib.request.urlretrieve(url, os.path.join(images_path, filename))
 
 # =============================================================================
 # Funções
@@ -163,32 +172,57 @@ house_test_prep = num_pipe.transform(house_test[num_attrib])
 # =============================================================================
 # variando eps de 0.5 a 1 há melhora na identificação de possíveis anomalia, 
 # porém alguns pontos no scatter que poderiam indicar anomalias deixam de ser 
-# marcados. 
-# Reduzindo o min_sample diminiu a marcação, chegando a praticamento 0
-# quando min_sample = 1
+# marcados, visto que aumentamos a distância para que esse ponto possa pertencer
+# ou não a um núcleo. Desta forma, temos pontos não núcleos por não terem
+# a quantidade mínima para se juntar ao cluster, mais ainda sim não podem
+# ser considerados como anomalia. 
+# Reduzindo o min_sample diminiu a marcação, chegando a praticamente 0
+# quando min_sample tende a 1, porque essa é quantidade de vizinhos que estão
+# dentro da distância eps, logo menos vizinhos, menos núcleos construídos.
 # =============================================================================
-house_scan_default = DBSCAN(eps=1, min_samples=20) 
+house_scan = DBSCAN(eps=1, min_samples=50) 
 
-house_scan_default.fit(house_train_prep)
+house_scan.fit(house_train_prep)
 
-house_scan_default.labels_[:10]
+house_scan.labels_[:10]
+
+n_clusters_ = len(set(house_scan.labels_)) - (1 if -1 in house_scan.labels_
+                                                      else 0)
 
 ############
-# scan = house_scan_default
+# scan = house_scan
 # X = house_train_prep
 columns_trained = num_attrib
 axes3d = [4,5,2]
-axes2d= [5, 2]
+axes2d= [0, 2]
 
 # análise de 3 pontos
-plot_Anomalies_3D(house_scan_default, house_train_prep, axes3d,
+plot_Anomalies_3D(house_scan, house_train_prep, axes3d,
                   [columns_trained[axes3d[0]], 
                    columns_trained[axes3d[1]],
                    columns_trained[axes3d[2]]])
 
 # análise de 2 pontos
-plot_Anomalies_2D(house_scan_default, house_train_prep, axes2d, 
+plot_Anomalies_2D(house_scan, house_train_prep, axes2d, 
                   [columns_trained[axes2d[0]], 
                    columns_trained[axes2d[1]]])
 
-01/03/2021 -> entender melhor efeito do min_sample no modelo. 
+# mostrando os dados no mapa da california
+california_img=mpimg.imread(os.path.join(images_path, filename))
+ax = housing.plot(kind="scatter", x="longitude", y="latitude", figsize=(10,7),
+                  c="median_house_value", cmap=plt.get_cmap("jet"),
+                       colorbar=False, alpha=0.4,
+                      )               
+plt.imshow(california_img, extent=[-124.55, -113.80, 32.45, 42.05], alpha=0.5,
+           cmap=plt.get_cmap("jet"))
+plt.ylabel("Latitude", fontsize=14)
+plt.xlabel("Longitude", fontsize=14)
+plt.show()
+                  
+
+to do: levar a marcação de anomalias para o mapa da california
+# ideia tirada deste paper: https://towardsdatascience.com/dbscan-algorithm-complete-guide-and-application-with-python-scikit-learn-d690cbae4c5d                  
+                  
+                  
+                  
+                  
