@@ -154,12 +154,14 @@ housing.hist(bins=50, figsize=(30,15))
 housing = housing[(housing['median_house_value'] < 500000) & 
                   (housing['housing_median_age'] < 52)]
 
+house_train = housing.copy()
+# unsupervised não tem teste, por que não tem o que se comparar
 # separando dados para teste e treino de forma aleatória com proporção de 80/20
-house_train, house_test = train_test_split(housing, test_size = 0.2, random_state=42)
+# house_train, house_test = train_test_split(housing, test_size = 0.2, random_state=42)
 
+# 'total_rooms', 'total_bedrooms', 'median_income', 'housing_median_age', 'population', 'households',
 
-num_attrib = ['total_rooms', 'total_bedrooms', 'median_income', 
-             'housing_median_age', 'population', 'households', ]
+num_attrib = ['latitude', 'longitude']
 cat_attrib = [ 'ocean_proximity']
 
 num_pipe = Pipeline([
@@ -167,7 +169,7 @@ num_pipe = Pipeline([
                     ])    
 
 house_train_prep = num_pipe.fit_transform(house_train[num_attrib])
-house_test_prep = num_pipe.transform(house_test[num_attrib])
+#house_test_prep = num_pipe.transform(house_test[num_attrib])
 
 # =============================================================================
 # variando eps de 0.5 a 1 há melhora na identificação de possíveis anomalia, 
@@ -180,7 +182,7 @@ house_test_prep = num_pipe.transform(house_test[num_attrib])
 # quando min_sample tende a 1, porque essa é quantidade de vizinhos que estão
 # dentro da distância eps, logo menos vizinhos, menos núcleos construídos.
 # =============================================================================
-house_scan = DBSCAN(eps=1, min_samples=50) 
+house_scan = DBSCAN(eps=0.2, min_samples=15) 
 
 house_scan.fit(house_train_prep)
 
@@ -188,14 +190,44 @@ house_scan.labels_[:10]
 
 n_clusters_ = len(set(house_scan.labels_)) - (1 if -1 in house_scan.labels_
                                                       else 0)
+# marcando as labels no data set para geração do mapa
+# ideia tirada deste paper: https://towardsdatascience.com/dbscan-algorithm-complete-guide-and-application-with-python-scikit-learn-d690cbae4c5d                  
 
+# marca os clusters
+house_train = house_train.copy()
+house_train['labels'] = pd.Series(house_scan.labels_).values
+house_clusters =  house_train[house_train['labels'] != -1]
+# isola as possíveis anomalias
+house_anomalies = house_train[house_train['labels'] == -1]
 ############
 # scan = house_scan
 # X = house_train_prep
 columns_trained = num_attrib
 axes3d = [4,5,2]
-axes2d= [0, 2]
+axes2d= [0, 1]
 
+
+# mostrando os dados no mapa da california
+california_img=mpimg.imread(os.path.join(images_path, filename))
+fig = plt.figure(figsize = (12,6))
+ax = fig.add_subplot(111)
+plt.scatter(x=house_anomalies["longitude"], y=house_anomalies["latitude"], 
+                      c='red', cmap=plt.get_cmap("jet"), marker='x')    
+
+plt.scatter(x=house_clusters["longitude"], y=house_clusters["latitude"], 
+                      c=house_clusters["labels"], cmap=plt.get_cmap("jet"),
+                       alpha=0.7
+                      )    
+
+plt.imshow(california_img, extent=[-124.55, -113.80, 32.45, 42.05], alpha=0.5,
+           cmap=plt.get_cmap("jet"))
+plt.ylabel("Latitude", fontsize=14)
+plt.xlabel("Longitude", fontsize=14)
+plt.title("eps={:.2f}, min_samples={} \n clusters {}".format(
+                house_scan.eps, house_scan.min_samples, n_clusters_), 
+              fontsize=14)
+plt.show()
+                  
 # análise de 3 pontos
 plot_Anomalies_3D(house_scan, house_train_prep, axes3d,
                   [columns_trained[axes3d[0]], 
@@ -206,23 +238,6 @@ plot_Anomalies_3D(house_scan, house_train_prep, axes3d,
 plot_Anomalies_2D(house_scan, house_train_prep, axes2d, 
                   [columns_trained[axes2d[0]], 
                    columns_trained[axes2d[1]]])
-
-# mostrando os dados no mapa da california
-california_img=mpimg.imread(os.path.join(images_path, filename))
-ax = housing.plot(kind="scatter", x="longitude", y="latitude", figsize=(10,7),
-                  c="median_house_value", cmap=plt.get_cmap("jet"),
-                       colorbar=False, alpha=0.4,
-                      )               
-plt.imshow(california_img, extent=[-124.55, -113.80, 32.45, 42.05], alpha=0.5,
-           cmap=plt.get_cmap("jet"))
-plt.ylabel("Latitude", fontsize=14)
-plt.xlabel("Longitude", fontsize=14)
-plt.show()
-                  
-
-to do: levar a marcação de anomalias para o mapa da california
-# ideia tirada deste paper: https://towardsdatascience.com/dbscan-algorithm-complete-guide-and-application-with-python-scikit-learn-d690cbae4c5d                  
-                  
-                  
-                  
-                  
+ 
+para entender melhor, treinando apenas latitude e longitude e marcando as anomalias. 
+próximos passos incluir outras features e ver o comportamento.                   
