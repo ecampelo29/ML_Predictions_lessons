@@ -123,6 +123,31 @@ def plot_Anomalies_2D (scan, X, axes, title):
               fontsize=14)
     plt.tick_params(labelbottom=False, labelleft=False)
     plt.show()
+    
+# =============================================================================
+# Objetos
+# =============================================================================
+# criando um binner para uso no pipeline (deve ter fit e transform)
+class qbinner(BaseEstimator, TransformerMixin):
+    def __init__ (self, lista_binner):
+        self.lista_binner = lista_binner # variáveis a serem transformadas
+        self.cat_encoder = OneHotEncoder()
+        self.new_x = None
+        
+    def fit (self, X, y=None):
+        return self # faz nada
+
+    def transform (self, X):
+        for cat in self.lista_binner:
+            try: 
+            # categorical quartile bucketing 
+                X[cat] = pd.qcut(X[cat],  4 , labels=['q1','q2','q3','q4'])
+            except TypeError:
+                continue
+            
+        new_x = X[self.lista_binner]
+        
+        return self.cat_encoder.fit_transform(new_x)
 # =============================================================================
 # Processando os dados
 # =============================================================================        
@@ -154,21 +179,33 @@ housing.hist(bins=50, figsize=(30,15))
 housing = housing[(housing['median_house_value'] < 500000) & 
                   (housing['housing_median_age'] < 52)]
 
+# correlações
+corr = housing.corr()
+corr['median_house_value'].sort_values(ascending=False)
+
 house_train = housing.copy()
 # unsupervised não tem teste, por que não tem o que se comparar
 # separando dados para teste e treino de forma aleatória com proporção de 80/20
 # house_train, house_test = train_test_split(housing, test_size = 0.2, random_state=42)
 
-# 'total_rooms', 'total_bedrooms', 'median_income', 'housing_median_age', 'population', 'households',
-
-num_attrib = ['latitude', 'longitude']
+num_attrib = ['latitude', 'longitude', 'median_house_value', 'median_income']
 cat_attrib = [ 'ocean_proximity']
+full_attrib = num_attrib+cat_attrib
 
 num_pipe = Pipeline([
                     ('scaler', StandardScaler()),
                     ])    
 
-house_train_prep = num_pipe.fit_transform(house_train[num_attrib])
+cat_pipe = Pipeline ([('binner', qbinner(cat_attrib)),])
+
+full_pipeline = ColumnTransformer([
+        ("num", num_pipe, num_attrib),
+        ("cat", cat_pipe, cat_attrib),
+    ])
+
+
+house_train_prep = full_pipeline.fit_transform(house_train[full_attrib])
+
 #house_test_prep = num_pipe.transform(house_test[num_attrib])
 
 # =============================================================================
@@ -182,7 +219,7 @@ house_train_prep = num_pipe.fit_transform(house_train[num_attrib])
 # quando min_sample tende a 1, porque essa é quantidade de vizinhos que estão
 # dentro da distância eps, logo menos vizinhos, menos núcleos construídos.
 # =============================================================================
-house_scan = DBSCAN(eps=0.2, min_samples=15) 
+house_scan = DBSCAN(eps=0.30, min_samples=10) 
 
 house_scan.fit(house_train_prep)
 
@@ -202,8 +239,8 @@ house_anomalies = house_train[house_train['labels'] == -1]
 ############
 # scan = house_scan
 # X = house_train_prep
-columns_trained = num_attrib
-axes3d = [4,5,2]
+columns_trained = full_attrib
+# axes3d = [4,5,2]
 axes2d= [0, 1]
 
 
@@ -211,13 +248,12 @@ axes2d= [0, 1]
 california_img=mpimg.imread(os.path.join(images_path, filename))
 fig = plt.figure(figsize = (12,6))
 ax = fig.add_subplot(111)
-plt.scatter(x=house_anomalies["longitude"], y=house_anomalies["latitude"], 
-                      c='red', cmap=plt.get_cmap("jet"), marker='x')    
-
 plt.scatter(x=house_clusters["longitude"], y=house_clusters["latitude"], 
                       c=house_clusters["labels"], cmap=plt.get_cmap("jet"),
                        alpha=0.7
                       )    
+plt.scatter(x=house_anomalies["longitude"], y=house_anomalies["latitude"], 
+                      c='red', cmap=plt.get_cmap("jet"), marker='x')    
 
 plt.imshow(california_img, extent=[-124.55, -113.80, 32.45, 42.05], alpha=0.5,
            cmap=plt.get_cmap("jet"))
@@ -229,15 +265,44 @@ plt.title("eps={:.2f}, min_samples={} \n clusters {}".format(
 plt.show()
                   
 # análise de 3 pontos
-plot_Anomalies_3D(house_scan, house_train_prep, axes3d,
-                  [columns_trained[axes3d[0]], 
-                   columns_trained[axes3d[1]],
-                   columns_trained[axes3d[2]]])
+# plot_Anomalies_3D(house_scan, house_train_prep, axes3d,
+#                   [columns_trained[axes3d[0]], 
+#                    columns_trained[axes3d[1]],
+#                    columns_trained[axes3d[2]]])
 
 # análise de 2 pontos
 plot_Anomalies_2D(house_scan, house_train_prep, axes2d, 
                   [columns_trained[axes2d[0]], 
                    columns_trained[axes2d[1]]])
- 
-para entender melhor, treinando apenas latitude e longitude e marcando as anomalias. 
-próximos passos incluir outras features e ver o comportamento.                   
+# conclusões
+# =============================================================================
+# Training 1 Longitude x Latitude: O gráfico mostra que existem 3 grupos 
+# (eps=0.2 min_samples=15) com indicação de vários outliers que estão a margem 
+# do conglomerado principal vide imagem ML_DBScan Training1. Os outliers 
+# baseados exclusivamente em suas coordenadas são plausíveis e deveriam ser 
+# analisados, se esse fosse o intuito.
+# Training 2 Long x Lat x Ocean_Proximity: após ajustes em eps e min_samples 
+# (eps=30 e min_sample = 10), temos um resultado satisfatório para a análise de 
+# outliers posicionais, ou seja, os agrupamentos baseados em coordenadas e 
+# localização mostram apenas alguns individuos a serem analisados como
+# possíveis problemas, se este fosse o intuito. 
+# T3 Posicionais + median_house_value: Se considerarmos que o que temos no
+# Training 2 (T2) é razoável para uma análise posicional, quando acrescentamos
+# o valor médio dos imóveis, há um aumento significativo de outliers. Neste caso
+# há indicação de que imóveis próximos à São Franciso, Sacramento e ao sudeste 
+# de Los Angeles devam ser estudados, pois seus valores médios não estariam 
+# dentro do esperado. 
+# =============================================================================
+
+
+To do: 
+na inclusão de renda média há uma explosão de outliers, analisar como melhorar 
+esse resultado, pois inicialmente há uma correlação importante entre 
+a renda e o preço médio dos imóveis. 
+Analisar o posicional com a renda média para ver como se comporta; 
+
+
+
+
+
+
