@@ -187,8 +187,12 @@ house_train = housing.copy()
 # unsupervised não tem teste, por que não tem o que se comparar
 # separando dados para teste e treino de forma aleatória com proporção de 80/20
 # house_train, house_test = train_test_split(housing, test_size = 0.2, random_state=42)
+#['longitude', 'latitude', 'housing_median_age', 'total_rooms',
+       # 'total_bedrooms', 'population', 'households', 'median_income',
+       # 'median_house_value', 'ocean_proximity']
 
-num_attrib = ['latitude', 'longitude', 'median_house_value', 'median_income']
+num_attrib = ['median_house_value', 'total_rooms', 
+              'total_bedrooms']
 cat_attrib = [ 'ocean_proximity']
 full_attrib = num_attrib+cat_attrib
 
@@ -204,9 +208,9 @@ full_pipeline = ColumnTransformer([
     ])
 
 
-house_train_prep = full_pipeline.fit_transform(house_train[full_attrib])
+# house_train_prep = full_pipeline.fit_transform(house_train[full_attrib])
 
-#house_test_prep = num_pipe.transform(house_test[num_attrib])
+house_train_prep = num_pipe.fit_transform(house_train[num_attrib])
 
 # =============================================================================
 # variando eps de 0.5 a 1 há melhora na identificação de possíveis anomalia, 
@@ -219,7 +223,7 @@ house_train_prep = full_pipeline.fit_transform(house_train[full_attrib])
 # quando min_sample tende a 1, porque essa é quantidade de vizinhos que estão
 # dentro da distância eps, logo menos vizinhos, menos núcleos construídos.
 # =============================================================================
-house_scan = DBSCAN(eps=0.30, min_samples=10) 
+house_scan = DBSCAN(eps=0.30, min_samples=5) 
 
 house_scan.fit(house_train_prep)
 
@@ -292,14 +296,18 @@ plot_Anomalies_2D(house_scan, house_train_prep, axes2d,
 # há indicação de que imóveis próximos à São Franciso, Sacramento e ao sudeste 
 # de Los Angeles devam ser estudados, pois seus valores médios não estariam 
 # dentro do esperado. 
+# T4 Median_house_value x Median_incame: analisando as possíveis anomalias entre
+# estas duas variáveis, verifica-se que estão concentradas nos grandes centros 
+# Losangeles e São Francisco.
+# T5 Median_house_value x Total_rooms: novamente os dois maiores centros populacionais
+# são destaque nas anomalias. 
+# T6 Median_house_values x rooms: como as variáveis sobre quartos apresentavam
+# o mesmo comportamento, foi possível incorporá-las no mesmo modelo. 
 # =============================================================================
 
 
 To do: 
-na inclusão de renda média há uma explosão de outliers, analisar como melhorar 
-esse resultado, pois inicialmente há uma correlação importante entre 
-a renda e o preço médio dos imóveis. 
-Analisar o posicional com a renda média para ver como se comporta; 
+continuar na inclusão de novas variáveis para estudo de anomalias.  
 
 
 
