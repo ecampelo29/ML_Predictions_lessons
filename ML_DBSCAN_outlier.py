@@ -12,18 +12,18 @@ import numpy as np
 import pandas as pd
 #import matplotlib as mpl
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
+#from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.image as mpimg
 from sklearn.pipeline import Pipeline
-from sklearn.model_selection import train_test_split
+#from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.cluster import DBSCAN
 
-from sklearn.metrics import mean_squared_error, r2_score
+#from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.compose import ColumnTransformer
 
-import joblib
+#import joblib
 import urllib
 
 # settings
@@ -33,6 +33,8 @@ warnings.filterwarnings(action="ignore", message="^internal gelsd")
 
 relatorio = os.path.join(os.path.expanduser('~'), 'Documentos', 
                                   'Machine learning', 'Resultados_DBSCAN.txt')
+fig_path = os.path.join(os.path.expanduser('~'), 'Documentos', 
+                                  'Machine learning', 'ML_DBScan')
 
 # capturando a imagem usada no livro para mapear os imóveis na califórnia
 images_path = relatorio = os.path.join(os.path.expanduser('~'), 'Documentos', 
@@ -45,45 +47,45 @@ urllib.request.urlretrieve(url, os.path.join(images_path, filename))
 # =============================================================================
 # Funções
 # =============================================================================
-def plot_Anomalies_3D (scan, X, axes, title):
-    ax = fig = []
-    core_mask = np.zeros_like (scan.labels_, dtype=bool) # cria uma array de false 
-    core_mask[scan.core_sample_indices_] = True # deixa como falso apenas os outliers
-    anomalies_mask = scan.labels_ == -1 # marca os casos de anomalia
-    non_core_mask = ~(core_mask | anomalies_mask) # marca os casos não core
+# def plot_Anomalies_3D (scan, X, axes, title):
+#     ax = fig = []
+#     core_mask = np.zeros_like (scan.labels_, dtype=bool) # cria uma array de false 
+#     core_mask[scan.core_sample_indices_] = True # deixa como falso apenas os outliers
+#     anomalies_mask = scan.labels_ == -1 # marca os casos de anomalia
+#     non_core_mask = ~(core_mask | anomalies_mask) # marca os casos não core
     
-    cores = scan.components_
-    anomalies = X[anomalies_mask]
-    non_cores = X[non_core_mask]
+#     cores = scan.components_
+#     anomalies = X[anomalies_mask]
+#     non_cores = X[non_core_mask]
     
-    # são 6 pontos e estou imprimindo apenas 3 no Axes3d
+#     # são 6 pontos e estou imprimindo apenas 3 no Axes3d
     
-    axes_lim = [int(np.floor(min(cores[:, axes[0]]))), int(np.ceil(max(cores[:, axes[0]]))),
-                int(np.floor(min(cores[:, axes[1]]))), int(np.ceil(max(cores[:, axes[1]]))),
-                int(np.floor(min(cores[:, axes[2]]))), int(np.ceil(max(cores[:, axes[2]])))]
+#     axes_lim = [int(np.floor(min(cores[:, axes[0]]))), int(np.ceil(max(cores[:, axes[0]]))),
+#                 int(np.floor(min(cores[:, axes[1]]))), int(np.ceil(max(cores[:, axes[1]]))),
+#                 int(np.floor(min(cores[:, axes[2]]))), int(np.ceil(max(cores[:, axes[2]])))]
     
-    fig = plt.figure(figsize = (7,4))
-    # ax = fig.add_subplot(111, projection = '3d')
-    ax = Axes3D(fig)
-    ax.view_init(10, -60)
-    plt.scatter(cores[:, axes[0]], cores[:, axes[1]], cores[:,axes[2]],
-                c=scan.labels_[core_mask], marker='o', cmap="Paired")
+#     fig = plt.figure(figsize = (7,4))
+#     # ax = fig.add_subplot(111, projection = '3d')
+#     ax = Axes3D(fig)
+#     ax.view_init(10, -60)
+#     plt.scatter(cores[:, axes[0]], cores[:, axes[1]], cores[:,axes[2]],
+#                 c=scan.labels_[core_mask], marker='o', cmap="Paired")
     
     
-    plt.scatter(cores[:, axes[0]], cores[:, axes[1]], cores[:,axes[2]], marker='*',  
-                    c=scan.labels_[core_mask])
-    plt.scatter(anomalies[:, axes[0]], anomalies[:,axes[1]], anomalies[:,axes[2]],
-                    c="r", marker="x")
-    plt.scatter(non_cores[:, axes[0]], non_cores[:, axes[1]],
-                non_cores[:, axes[2]],  c='orange', marker=".")
-    plt.title("eps={:.2f}, min_samples={} \n {} x {} x {}".format(
-                scan.eps, scan.min_samples, title[0],title[1], title[2]), 
-              fontsize=14)
-    ax.set_xlim(axes_lim[0:2])
-    ax.set_ylim(axes_lim[2:4])
-    ax.set_zlim(axes_lim[4:6])
+#     plt.scatter(cores[:, axes[0]], cores[:, axes[1]], cores[:,axes[2]], marker='*',  
+#                     c=scan.labels_[core_mask])
+#     plt.scatter(anomalies[:, axes[0]], anomalies[:,axes[1]], anomalies[:,axes[2]],
+#                     c="r", marker="x")
+#     plt.scatter(non_cores[:, axes[0]], non_cores[:, axes[1]],
+#                 non_cores[:, axes[2]],  c='orange', marker=".")
+#     plt.title("eps={:.2f}, min_samples={} \n {} x {} x {}".format(
+#                 scan.eps, scan.min_samples, title[0],title[1], title[2]), 
+#               fontsize=14)
+#     ax.set_xlim(axes_lim[0:2])
+#     ax.set_ylim(axes_lim[2:4])
+#     ax.set_zlim(axes_lim[4:6])
     
-    plt.show()
+#     plt.show()
 
 
 def plot_Anomalies_2D (scan, X, axes, title):
@@ -123,7 +125,34 @@ def plot_Anomalies_2D (scan, X, axes, title):
               fontsize=14)
     plt.tick_params(labelbottom=False, labelleft=False)
     plt.show()
+
+# marcando as labels no data set para geração do mapa
+# ideia tirada deste paper: https://towardsdatascience.com/dbscan-algorithm-complete-guide-and-application-with-python-scikit-learn-d690cbae4c5d                  
+def plot_map(house_clusters, house_anomalies, house_scan, var_analysis):
+    # número de clusters encontrado
+    n_clusters_ = len(set(house_scan.labels_)) - (1 if -1 in house_scan.labels_
+                                                      else 0)
+    # mostrando os dados no mapa da california
+    california_img=mpimg.imread(os.path.join(images_path, filename))
+    fig = plt.figure(figsize = (12,6))
+    ax = fig.add_subplot(111)
+    plt.scatter(x=house_clusters["longitude"], y=house_clusters["latitude"], 
+                          c=house_clusters["labels"], cmap=plt.get_cmap("jet"),
+                           alpha=0.7
+                          )    
+    plt.scatter(x=house_anomalies["longitude"], y=house_anomalies["latitude"], 
+                          c='red', cmap=plt.get_cmap("jet"), marker='x')    
     
+    plt.imshow(california_img, extent=[-124.55, -113.80, 32.45, 42.05], alpha=0.5,
+               cmap=plt.get_cmap("jet"))
+    plt.ylabel("Latitude", fontsize=14)
+    plt.xlabel("Longitude", fontsize=14)
+    plt.title("eps={:.2f}, min_samples={} \n clusters {} analisys: {}"
+              "\n anomalies: {}".format(
+                  house_scan.eps, house_scan.min_samples, n_clusters_,
+                  var_analysis, len(house_anomalies)), fontsize=14)
+    plt.savefig(fig_path+'/ML_DBScan_'+var_analysis, format='png', dpi=300)
+    plt.show()
 # =============================================================================
 # Objetos
 # =============================================================================
@@ -191,26 +220,31 @@ house_train = housing.copy()
        # 'total_bedrooms', 'population', 'households', 'median_income',
        # 'median_house_value', 'ocean_proximity']
 
-num_attrib = ['median_house_value', 'total_rooms', 
-              'total_bedrooms']
-cat_attrib = [ 'ocean_proximity']
-full_attrib = num_attrib+cat_attrib
+# variáveis a serem comparadas em relação às espaciais
+list_var_analysis = ['housing_median_age', 'total_rooms', 'total_bedrooms', 
+                     'population', 'households', 'median_income',
+                     'median_house_value']
 
-num_pipe = Pipeline([
-                    ('scaler', StandardScaler()),
-                    ])    
+for var in list_var_analysis: 
+    num_attrib = ['longitude', 'latitude'] + [var]    
+    cat_attrib = [ 'ocean_proximity']
+    full_attrib = num_attrib+cat_attrib
+    
+    num_pipe = Pipeline([
+                        ('scaler', StandardScaler()),
+                        ])    
+    
+    cat_pipe = Pipeline ([('binner', qbinner(cat_attrib)),])
+    
+    full_pipeline = ColumnTransformer([
+            ("num", num_pipe, num_attrib),
+            ("cat", cat_pipe, cat_attrib),
+        ])
+    
+    
+    house_train_prep = full_pipeline.fit_transform(house_train[full_attrib])
 
-cat_pipe = Pipeline ([('binner', qbinner(cat_attrib)),])
-
-full_pipeline = ColumnTransformer([
-        ("num", num_pipe, num_attrib),
-        ("cat", cat_pipe, cat_attrib),
-    ])
-
-
-# house_train_prep = full_pipeline.fit_transform(house_train[full_attrib])
-
-house_train_prep = num_pipe.fit_transform(house_train[num_attrib])
+# house_train_prep = num_pipe.fit_transform(house_train[num_attrib])
 
 # =============================================================================
 # variando eps de 0.5 a 1 há melhora na identificação de possíveis anomalia, 
@@ -223,50 +257,33 @@ house_train_prep = num_pipe.fit_transform(house_train[num_attrib])
 # quando min_sample tende a 1, porque essa é quantidade de vizinhos que estão
 # dentro da distância eps, logo menos vizinhos, menos núcleos construídos.
 # =============================================================================
-house_scan = DBSCAN(eps=0.30, min_samples=5) 
 
-house_scan.fit(house_train_prep)
+# o eps e min foi setado sobre as variáveis posicionais latitude, longitude e 
+# ocean proximity, de forma a identificar os clusters regionais. 
+# após isto inlcuí uma variável extra por vez para analisar suas anomalias de 
+# forma independente
 
-house_scan.labels_[:10]
+    house_scan = DBSCAN(eps=0.5, min_samples=9) 
+    
+    house_scan.fit(house_train_prep)
+    
+    house_scan.labels_[:10]
+    
+    # marca os clusters
+    house_train = house_train.copy()
+    house_train['labels'] = pd.Series(house_scan.labels_).values
+    house_clusters =  house_train[house_train['labels'] != -1]
+    # isola as possíveis anomalias
+    house_anomalies = house_train[house_train['labels'] == -1]
+    ############
+    # scan = house_scan
+    # X = house_train_prep
+    #columns_trained = full_attrib
+    # axes3d = [4,5,2]
+    #axes2d= [0, 1]
 
-n_clusters_ = len(set(house_scan.labels_)) - (1 if -1 in house_scan.labels_
-                                                      else 0)
-# marcando as labels no data set para geração do mapa
-# ideia tirada deste paper: https://towardsdatascience.com/dbscan-algorithm-complete-guide-and-application-with-python-scikit-learn-d690cbae4c5d                  
+    plot_map(house_clusters, house_anomalies, house_scan, var)
 
-# marca os clusters
-house_train = house_train.copy()
-house_train['labels'] = pd.Series(house_scan.labels_).values
-house_clusters =  house_train[house_train['labels'] != -1]
-# isola as possíveis anomalias
-house_anomalies = house_train[house_train['labels'] == -1]
-############
-# scan = house_scan
-# X = house_train_prep
-columns_trained = full_attrib
-# axes3d = [4,5,2]
-axes2d= [0, 1]
-
-
-# mostrando os dados no mapa da california
-california_img=mpimg.imread(os.path.join(images_path, filename))
-fig = plt.figure(figsize = (12,6))
-ax = fig.add_subplot(111)
-plt.scatter(x=house_clusters["longitude"], y=house_clusters["latitude"], 
-                      c=house_clusters["labels"], cmap=plt.get_cmap("jet"),
-                       alpha=0.7
-                      )    
-plt.scatter(x=house_anomalies["longitude"], y=house_anomalies["latitude"], 
-                      c='red', cmap=plt.get_cmap("jet"), marker='x')    
-
-plt.imshow(california_img, extent=[-124.55, -113.80, 32.45, 42.05], alpha=0.5,
-           cmap=plt.get_cmap("jet"))
-plt.ylabel("Latitude", fontsize=14)
-plt.xlabel("Longitude", fontsize=14)
-plt.title("eps={:.2f}, min_samples={} \n clusters {}".format(
-                house_scan.eps, house_scan.min_samples, n_clusters_), 
-              fontsize=14)
-plt.show()
                   
 # análise de 3 pontos
 # plot_Anomalies_3D(house_scan, house_train_prep, axes3d,
@@ -275,9 +292,9 @@ plt.show()
 #                    columns_trained[axes3d[2]]])
 
 # análise de 2 pontos
-plot_Anomalies_2D(house_scan, house_train_prep, axes2d, 
-                  [columns_trained[axes2d[0]], 
-                   columns_trained[axes2d[1]]])
+# plot_Anomalies_2D(house_scan, house_train_prep, axes2d, 
+#                   [columns_trained[axes2d[0]], 
+#                    columns_trained[axes2d[1]]])
 # conclusões
 # =============================================================================
 # Training 1 Longitude x Latitude: O gráfico mostra que existem 3 grupos 
@@ -305,12 +322,28 @@ plot_Anomalies_2D(house_scan, house_train_prep, axes2d,
 # o mesmo comportamento, foi possível incorporá-las no mesmo modelo. 
 # =============================================================================
 
+# =============================================================================
+# Usando a abordagem de se analisar uma varíavel numérica em relação às espaciais
+# (lat, long, ocean proximity) verifica-se que:
+# - median_house_value -> 10 anomalias, logo a precificação por localização é aceitável
+# - housing_median_age -> 22 anomalias, também aceitável 
+# - median_income -> 51 anomalias, concentradas nos grandes centros. Necessário estudá-las para entender a motivação
+# Outras que estão ligadas às concentrações dos grandes centros urbanos, que seria interessante estudá-las:
+# - population -> 145 anomalias
+# - households -> 132 anomalias
+# - total_bedrooms -> 148 anomalias
+# - total_rooms -> 177 anomalias    
+# Quando isoladas, essas variáveis apresentam fortes correlações positivas entre si. 
+# housing[['total_rooms', 'total_bedrooms', 'population', 'households']].corr()
+#                total_rooms  total_bedrooms  population  households
+# total_rooms        1.000000        0.935415    0.860279    0.922493
+# total_bedrooms     0.935415        1.000000    0.880314    0.978815
+# population         0.860279        0.880314    1.000000    0.910656
+# households         0.922493        0.978815    0.910656    1.000000
+# =============================================================================
 
-To do: 
-continuar na inclusão de novas variáveis para estudo de anomalias.  
-
-
-
+to_do: experimentar com redução de dimensionalidade (PCA e SVD), já que 
+dbscan tem limitações por conta da medição espacial. 
 
 
 
