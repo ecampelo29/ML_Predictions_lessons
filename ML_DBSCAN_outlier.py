@@ -342,8 +342,61 @@ for var in list_var_analysis:
 # households         0.922493        0.978815    0.910656    1.000000
 # =============================================================================
 
-to_do: experimentar com redução de dimensionalidade (PCA e SVD), já que 
-dbscan tem limitações por conta da medição espacial. 
+# =============================================================================
+# Experimentando com redução de dimensionalidade
+# =============================================================================
+from sklearn.decomposition import PCA
+
+# mantendo 95% da explicação entre as variáveis que são correlatas
+pca = PCA(n_components=0.95)
+corr_attrib = [ 'total_rooms', 'total_bedrooms', 
+                     'population', 'households']
+
+correlatas = pca.fit_transform(house_train[corr_attrib])
+
+house_train['correlatas'] = correlatas
+
+num_attrib = ['longitude', 'latitude','correlatas']   
+cat_attrib = [ 'ocean_proximity']
+full_attrib = num_attrib+cat_attrib
+
+num_pipe = Pipeline([
+                    ('scaler', StandardScaler()),
+                    ])    
+
+cat_pipe = Pipeline ([('binner', qbinner(cat_attrib)),])
+
+full_pipeline = ColumnTransformer([
+        ("num", num_pipe, num_attrib),
+        ("cat", cat_pipe, cat_attrib),
+    ])
+
+
+house_train_prep = full_pipeline.fit_transform(house_train[full_attrib])
+
+house_scan = DBSCAN(eps=0.5, min_samples=9) 
+
+house_scan.fit(house_train_prep)
+
+house_scan.labels_[:10]
+
+# marca os clusters
+house_train = house_train.copy()
+house_train['labels'] = pd.Series(house_scan.labels_).values
+house_clusters =  house_train[house_train['labels'] != -1]
+# isola as possíveis anomalias
+house_anomalies = house_train[house_train['labels'] == -1]
+
+plot_map(house_clusters, house_anomalies, house_scan, 'correlatas')
+
+# =============================================================================
+# A conjunção das 4 variáveis correlatas geraram 172 anomalias, mostrando 
+# uma forma mais interessante de análise destas variáveis. 
+# =============================================================================
+
+
+
+
 
 
 
