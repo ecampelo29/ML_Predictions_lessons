@@ -48,27 +48,6 @@ relatorio = os.path.join(os.path.expanduser('~'), 'Documentos',
 
 
 # adaptando o objeto do livro 
-# class EmailToWordCounterTransformer(BaseEstimator, TransformerMixin):
-#     def __init__(self):
-#         self.stemming = True
-       
-#     def fit(self, X, y=None):
-#         return self
-    
-#     def transform(self, X):
-#         stemmer = nltk.PorterStemmer()
-#         X_transformed = []
-#         for msg in list(X['body']):
-#             word_counts = Counter(msg.split())
-#             if self.stemming and stemmer is not None:
-#                 stemmed_word_counts = Counter()
-#                 for word, count in word_counts.items():
-#                     stemmed_word = stemmer.stem(word)
-#                     stemmed_word_counts[stemmed_word] += count
-#                 word_counts = stemmed_word_counts
-#             X_transformed.append(word_counts)
-#         return np.array(X_transformed)
-
 # incluindo o assunto para ver se melhora o desempenho no hard ham
 class EmailToWordCounterTransformer(BaseEstimator, TransformerMixin):
     def __init__(self):
@@ -96,37 +75,6 @@ class EmailToWordCounterTransformer(BaseEstimator, TransformerMixin):
                 word_counts = stemmed_word_counts
             X_transformed.append((sub_word_count, word_counts))
         return np.array(X_transformed)
-
-
-
-
-
-
-# class WordCounterToVectorTransformer(BaseEstimator, TransformerMixin):
-#     def __init__(self, vocabulary_size=1000):
-#         self.vocabulary_size = vocabulary_size
-#     def fit(self, X, y=None):
-#         total_count = Counter()
-#         for word_count in X:
-#             for word, count in word_count.items():
-#                 total_count[word] += min(count, 10)
-#         most_common = total_count.most_common()[:self.vocabulary_size]
-#         self.most_common_ = most_common
-#         self.vocabulary_ = {word: index + 1 for index, (word, count) in enumerate(most_common)}
-#         return self
-#     def transform(self, X, y=None):
-#         rows = []
-#         cols = []
-#         data = []
-#         for row, word_count in enumerate(X):
-#             print(word_count)
-#             for word, count in word_count.items():
-#                 rows.append(row)
-#                 cols.append(self.vocabulary_.get(word, 0))
-#                 data.append(count)
-                
-#         return csr_matrix((data, (rows, cols)), shape=(len(X), self.vocabulary_size + 1))
-    
 
 # ajustando para considerar transformação do assunto do email
 class WordCounterToVectorTransformer(BaseEstimator, TransformerMixin):
@@ -172,7 +120,7 @@ class WordCounterToVectorTransformer(BaseEstimator, TransformerMixin):
 
 
 # =============================================================================
-# 
+# area de análise - descomentar para uso
 # =============================================================================
 # few = X_train[:3]
 
@@ -281,9 +229,6 @@ preprocess_pipeline = Pipeline([
 X_train_transformed = preprocess_pipeline.fit_transform(X_train)
 X_test_transformed = preprocess_pipeline.transform(X_test)
 
-# pipeline passou a apresentar erro no dicionário ??  se processado um por vez
-# funciona normalmente... 
-
 # word_tranformer = WordCounterToVectorTransformer()
 
 # X_e = EmailToWordCounterTransformer().fit_transform(X_train)
@@ -390,7 +335,7 @@ metricas = func.classification_metrics(relatorio, lr_clf, y_test, y_pred, y_scor
 print(metricas)
 
 
- tentar ajustar os parametros do svc para encontrar um resultado melhor
+
 # melhor... 84% // 85% - melhor modelo 
 from sklearn.svm import SVC
 svm_clf = SVC(kernel = 'rbf', gamma="scale",  probability=True, random_state=42)
@@ -400,9 +345,8 @@ svm_clf.fit(X_train_transformed, y_train)
 func.predicting(svm_clf, new_data_transformed, df_label, relatorio)
 
 # =============================================================================
-# Ajustando o melhor modelo até agora: KNN
+# Ajustando o melhor modelo até agora
 # =============================================================================
-
 # K - quantidade de vizinhos a serem usados no calculo da distância 
 ks = list(range(3,31))
 
@@ -424,7 +368,6 @@ gs_clf = gs.fit(X_train_transformed, y_train)
 
 best_params = gs_clf.best_params_
 
-# pior que o default 81% ??
 best_kn_clf = gs_clf.best_estimator_
 
 func.keep_model(best_kn_clf, 'best_kn_clf_spam')
@@ -434,7 +377,7 @@ best_kn_clf = func.load_model('best_kn_clf_spam')
 func.predicting(best_kn_clf, new_data_transformed, df_label, relatorio)
 
 # =============================================================================
-# 
+# segundo melhor
 # =============================================================================
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVC
@@ -447,20 +390,21 @@ grid_svc.fit(X_train_transformed, y_train)
 
 best_params = grid_svc.best_params_
 
-# pior que o default 81% ??
 best_svc_clf = grid_svc.best_estimator_
 
 func.keep_model(best_kn_clf, 'best_svc_clf_spam')
 
-best_kn_clf = func.load_model('best_svc_clf_spam')
+best_svc_clf = func.load_model('best_svc_clf_spam')
 
-func.predicting(best_kn_clf, new_data_transformed, df_label, relatorio)
+func.predicting(best_svc_clf, new_data_transformed, df_label, relatorio)
 
 # =============================================================================
 # após incluir o assunto como variável, pois não há muitos dados para treinar
 # o modelo de forma mais completa, verifica-se que no dataset de treino e teste
 # as métricas não são promissoras, porém há melhora em todos os modelos
-# qdo aplicado no dataset Hard Ham, chegando a 85% de identificação de não spam 
+# qdo aplicado no dataset Hard Ham, chegando a 88% de identificação de não spam 
+# KNN: Tue Negatives  : 261 False Negatives: 35 (261 de 296 não spam)
+# SVC: Tue Negatives  : 253 False Negatives: 43 (253 de 296 não spam )
 # =============================================================================
 
 
